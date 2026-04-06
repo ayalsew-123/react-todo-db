@@ -27,8 +27,8 @@ function App() {
     setLoading(false)
   }
 
-  useEffect(() => {
-    fetchTodos()
+   fetchTodos()useEffect(() => {
+   
   }, [])
 
   const handleSubmit = async (e) => {
