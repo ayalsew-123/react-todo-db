@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabaseClient'
 import './App.css'
 
@@ -6,6 +6,10 @@ function App() {
   const [todos, setTodos] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchTodos()
+  }, [])
 
   async function fetchTodos() {
     setLoading(true)
@@ -16,48 +20,44 @@ function App() {
       .order('created_at', { ascending: true })
 
     if (error) {
-      console.error('Error fetching todos:', error)
+      console.error('Error fetching todos:', error.message)
+      alert(`Fetch failed: ${error.message}`)
     } else {
-      setTodos(data)
+      setTodos(data || [])
     }
 
     setLoading(false)
   }
 
-  useEffect(() => {
-    fetchTodos()
-  }, [])
-
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault()
 
     if (!inputValue.trim()) return
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('todos')
-      .insert({ text: inputValue.trim() })
-      .select()
+      .insert([{ text: inputValue.trim() }])
 
     if (error) {
-      console.error('Error adding todo:', error)
+      console.error('Error adding todo:', error.message)
       alert(`Add failed: ${error.message}`)
     } else {
-      setTodos([...todos, data[0]])
       setInputValue('')
+      fetchTodos()
     }
   }
 
-  const deleteTodo = async (id) => {
+  async function deleteTodo(id) {
     const { error } = await supabase
       .from('todos')
       .delete()
       .eq('id', id)
 
     if (error) {
-      console.error('Error deleting todo:', error)
+      console.error('Error deleting todo:', error.message)
       alert(`Delete failed: ${error.message}`)
     } else {
-      setTodos(todos.filter((todo) => todo.id !== id))
+      fetchTodos()
     }
   }
 
