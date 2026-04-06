@@ -7,10 +7,6 @@ function App() {
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchTodos()
-  }, [])
-
   async function fetchTodos() {
     setLoading(true)
 
@@ -28,9 +24,12 @@ function App() {
     setLoading(false)
   }
 
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!inputValue.trim()) return
 
     const { data, error } = await supabase
@@ -80,10 +79,7 @@ function App() {
           {todos.map((todo) => (
             <li key={todo.id} className="todo-item">
               <span>{todo.text}</span>
-              <button
-                className="delete-btn"
-                onClick={() => deleteTodo(todo.id)}
-              >
+              <button onClick={() => deleteTodo(todo.id)}>
                 Delete
               </button>
             </li>
