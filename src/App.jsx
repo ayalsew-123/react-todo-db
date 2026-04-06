@@ -15,8 +15,11 @@ function App() {
       .select('*')
       .order('created_at', { ascending: true })
 
+    console.log('FETCH RESULT:', { data, error })
+
     if (error) {
       console.error('Error fetching todos:', error)
+      alert(`Fetch failed: ${error.message}`)
     } else {
       setTodos(data)
     }
@@ -30,6 +33,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     if (!inputValue.trim()) return
 
     const { data, error } = await supabase
@@ -37,8 +41,11 @@ function App() {
       .insert({ text: inputValue.trim() })
       .select()
 
+    console.log('ADD RESULT:', { data, error })
+
     if (error) {
       console.error('Error adding todo:', error)
+      alert(`Add failed: ${error.message}`)
     } else {
       setTodos([...todos, data[0]])
       setInputValue('')
@@ -51,8 +58,11 @@ function App() {
       .delete()
       .eq('id', id)
 
+    console.log('DELETE RESULT:', { error })
+
     if (error) {
       console.error('Error deleting todo:', error)
+      alert(`Delete failed: ${error.message}`)
     } else {
       setTodos(todos.filter((todo) => todo.id !== id))
     }
@@ -79,7 +89,10 @@ function App() {
           {todos.map((todo) => (
             <li key={todo.id} className="todo-item">
               <span>{todo.text}</span>
-              <button onClick={() => deleteTodo(todo.id)}>
+              <button
+                className="delete-btn"
+                onClick={() => deleteTodo(todo.id)}
+              >
                 Delete
               </button>
             </li>
