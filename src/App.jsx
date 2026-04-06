@@ -15,11 +15,8 @@ function App() {
       .select('*')
       .order('created_at', { ascending: true })
 
-    console.log('FETCH RESULT:', { data, error })
-
     if (error) {
       console.error('Error fetching todos:', error)
-      alert(`Fetch failed: ${error.message}`)
     } else {
       setTodos(data)
     }
@@ -27,8 +24,8 @@ function App() {
     setLoading(false)
   }
 
-   fetchTodos()useEffect(() => {
-   
+  useEffect(() => {
+    fetchTodos()
   }, [])
 
   const handleSubmit = async (e) => {
@@ -40,8 +37,6 @@ function App() {
       .from('todos')
       .insert({ text: inputValue.trim() })
       .select()
-
-    console.log('ADD RESULT:', { data, error })
 
     if (error) {
       console.error('Error adding todo:', error)
@@ -57,8 +52,6 @@ function App() {
       .from('todos')
       .delete()
       .eq('id', id)
-
-    console.log('DELETE RESULT:', { error })
 
     if (error) {
       console.error('Error deleting todo:', error)
